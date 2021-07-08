@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/product.dart';
+import '../provider/products.dart';
 import './product_item.dart';
 
 class ProductsGrid extends StatelessWidget {
@@ -12,10 +12,13 @@ class ProductsGrid extends StatelessWidget {
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: products.length,
-      itemBuilder: (ctx, i) => ProductItem(
-        products[i].id,
-        products[i].title,
-        products[i].imageUrl,
+      itemBuilder: (ctx, i) => ChangeNotifierProvider(
+        create: (c) => //builder doesn't support latest versoin of flutter
+            products[i],
+        child: ProductItem(
+            // products[i].id,        // we are providing single product item
+            // products[i].title,    // so we don't need to
+            ),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
