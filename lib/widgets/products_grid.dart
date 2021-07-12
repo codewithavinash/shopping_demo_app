@@ -12,9 +12,12 @@ class ProductsGrid extends StatelessWidget {
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: products.length,
-      itemBuilder: (ctx, i) => ChangeNotifierProvider(
-        create: (c) => //builder doesn't support latest versoin of flutter
-            products[i],
+      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+        value: products[i],
+
+        // create: (c) => //builder doesn't support latest versoin of flutter
+        //     products[i],
+
         child: ProductItem(
             // products[i].id,        // we are providing single product item
             // products[i].title,    // so we don't need to
