@@ -13,7 +13,8 @@ class ProductsGrid extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       itemCount: products.length,
       itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-        value: products[i],
+        value: products[
+            i], //.value should be used in reusable object like grid/list
 
         // create: (c) => //builder doesn't support latest versoin of flutter
         //     products[i],
