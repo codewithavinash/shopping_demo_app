@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// this is how to import only a part from a class
+// prefix "as show" : to import only a part from a class
 import '../provider/cart.dart' show Cart;
+
+// prefix "as objectName" : to make an object of a class, so that if both class has same variable name we can distinguish b/w them
+// import '../widgets/cart_item.dart' as ci;
 import '../widgets/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
