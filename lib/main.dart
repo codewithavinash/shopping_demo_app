@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/widgets/user_products_item.dart';
 import 'package:provider/provider.dart';
 
 //widgets
@@ -8,6 +9,7 @@ import 'screens/cart_screen.dart';
 import './screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/orders_screen.dart';
+import './screens/user_products_screen.dart';
 
 //provider
 import '../provider/products.dart';
@@ -23,7 +25,8 @@ class MyApp extends StatelessWidget {
       providers: [
         //provided
         ChangeNotifierProvider(
-          // value: Products(), // Do not use ChangeNotifierProvider.value when you are instantiating a class
+          // value: Products(),
+          // Do not use ChangeNotifierProvider.value when you are instantiating a class
           create: (ctx) => Products(), // provided class
         ),
         ChangeNotifierProvider(create: (ctx) => Cart()),
@@ -43,6 +46,7 @@ class MyApp extends StatelessWidget {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
             CartScreen.routeName: (ctx) => CartScreen(),
             OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
           }),
     );
   }
