@@ -48,6 +48,13 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
   }
 
   void _saveFrom() {
+    // triggers all the validators (this is done without autovalidators)
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      // this blank return stops the execution of the entire func
+      return;
+    }
+
     _form.currentState.save();
     print(_editedProduct.title);
     print(_editedProduct.description);
@@ -79,6 +86,13 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_priceFocusNode);
                   },
+                  validator: (value) {
+                    // value = what user enters in the input field
+                    if (value.isEmpty) {
+                      return 'Please provide a value';
+                    }
+                    return null;
+                  },
                   onSaved: (value) {
                     _editedProduct = Product(
                       id: _editedProduct.id,
@@ -95,7 +109,20 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                   keyboardType: TextInputType.number,
                   focusNode: _priceFocusNode,
                   onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                    FocusScope.of(context)
+                        .requestFocus(_descriptionFocusNode); //
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter price!';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return "Enter valid number!";
+                    }
+                    if (double.parse(value) <= 0) {
+                      return 'Please enter a number greter than 0!';
+                    }
+                    return null; //valid
                   },
                   onSaved: (value) {
                     _editedProduct = Product(
@@ -113,6 +140,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                   // textInputAction: TextInputAction.next, //mutliline has inbuilt next line option
                   keyboardType: TextInputType.multiline,
                   focusNode: _descriptionFocusNode,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Please add description!";
+                    }
+                    if (value.length < 10) {
+                      return "atleast 10 characters long!";
+                    }
+                    return null;
+                  },
                   onSaved: (value) {
                     _editedProduct = Product(
                       id: _editedProduct.id,
@@ -155,6 +191,22 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                         focusNode: _imageUrlFocusNode,
                         onFieldSubmitted: (_) {
                           _saveFrom(); // trigered when TexInputAction.done is hit
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "Please add Image URL!";
+                          }
+                          if (!value.startsWith('http') &&
+                              !value.startsWith('https') &&
+                              !value.startsWith('www')) {
+                            return 'Please enter valid URL';
+                          }
+                          if (!value.endsWith('.png') &&
+                              !value.endsWith('.jpg') &&
+                              !value.endsWith('.jpeg')) {
+                            return 'Please enter valid image URL';
+                          }
+                          return null;
                         },
                       ),
                     ),
