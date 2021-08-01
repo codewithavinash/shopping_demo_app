@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/products.dart';
 import '../provider/product.dart';
 
 class EditProductsScreen extends StatefulWidget {
@@ -22,11 +24,48 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     imageUrl: '',
   );
 
+  // these are values set up for new products
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+
+  var _isInit = true;
+
   // setting up the listener
   @override
   void initState() {
-    _imageUrlController.addListener(_updateImageUrl);
+    _imageUrlFocusNode.addListener(_updateImageUrl);
+    // ModalRoute.of(context).settings; // doesn't work in initState();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // didChangeDependencies() runs multiple of times so we initialise _isInit to run when its true
+    if (_isInit) {
+      // extracting id
+      final productId = ModalRoute.of(context).settings.arguments as String;
+      // finding product
+      if (productId != null) {
+        _editedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
+
+        // @override
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          // 'imageUrl': _editedProduct.imageUrl,
+          'imageUrl': '',
+        };
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   // update url whenever the focus changes
@@ -56,10 +95,20 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     }
 
     _form.currentState.save();
-    print(_editedProduct.title);
-    print(_editedProduct.description);
-    print(_editedProduct.price);
-    print(_editedProduct.imageUrl);
+    // print(_editedProduct.title);
+    // print(_editedProduct.description);
+    // print(_editedProduct.price);
+    // print(_editedProduct.imageUrl);
+
+    if (_editedProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    } else {
+      // adding product with user input
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -81,6 +130,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
             child: ListView(
               children: [
                 TextFormField(
+                  initialValue: _initValues['title'],
                   decoration: InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
@@ -100,10 +150,12 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       description: _editedProduct.description,
                       price: _editedProduct.price,
                       imageUrl: _editedProduct.imageUrl,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   },
                 ),
                 TextFormField(
+                  initialValue: _initValues['price'],
                   decoration: InputDecoration(labelText: 'Price'),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
@@ -131,10 +183,12 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       description: _editedProduct.description,
                       price: double.parse(value),
                       imageUrl: _editedProduct.imageUrl,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   },
                 ),
                 TextFormField(
+                  initialValue: _initValues['description'],
                   decoration: InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                   // textInputAction: TextInputAction.next, //mutliline has inbuilt next line option
@@ -156,6 +210,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       description: _editedProduct.description,
                       price: _editedProduct.price,
                       imageUrl: value,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   },
                 ),
@@ -184,9 +239,11 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                     ),
                     Expanded(
                       child: TextFormField(
+                        // initialValue: _initValues['imageUrl'],
                         decoration: InputDecoration(labelText: 'Image URL'),
                         keyboardType: TextInputType.url,
                         textInputAction: TextInputAction.done,
+                        // you can't add initail value if your are using controller
                         controller: _imageUrlController,
                         focusNode: _imageUrlFocusNode,
                         onFieldSubmitted: (_) {
