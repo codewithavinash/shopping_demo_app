@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/app_drawer.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
-import 'cart_screen.dart';
-import '../widgets/app_drawer.dart';
 import '../provider/cart.dart';
+import './cart_screen.dart';
 
 enum FilterOptions {
   Favorites,
@@ -18,10 +18,10 @@ class ProductsOverviewScreen extends StatefulWidget {
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
-  var _showOnlyFavourites = false;
+  var _showOnlyFavorites = false;
+
   @override
   Widget build(BuildContext context) {
-    // final productsContainer = Provider.of<Products>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('MyShop'),
@@ -29,13 +29,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {
               setState(() {
-                // print(selectedValue);
                 if (selectedValue == FilterOptions.Favorites) {
-                  // productsContainer.showFavoritesOnly();
-                  _showOnlyFavourites = true;
+                  _showOnlyFavorites = true;
                 } else {
-                  // productsContainer.showAll();
-                  _showOnlyFavourites = false;
+                  _showOnlyFavorites = false;
                 }
               });
             },
@@ -44,11 +41,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
             itemBuilder: (_) => [
               PopupMenuItem(
-                child: Text('Only Favourites'),
+                child: Text('Only Favorites'),
                 value: FilterOptions.Favorites,
               ),
               PopupMenuItem(
-                child: Text('Show all Fouvarites'),
+                child: Text('Show All'),
                 value: FilterOptions.All,
               ),
             ],
@@ -59,7 +56,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               value: cart.itemCount.toString(),
             ),
             child: IconButton(
-              icon: Icon(Icons.shopping_cart),
+              icon: Icon(
+                Icons.shopping_cart,
+              ),
               onPressed: () {
                 Navigator.of(context).pushNamed(CartScreen.routeName);
               },
@@ -68,7 +67,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: new ProductsGrid(_showOnlyFavourites),
+      body: ProductsGrid(_showOnlyFavorites),
     );
   }
 }

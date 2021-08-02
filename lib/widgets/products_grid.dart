@@ -8,23 +8,21 @@ class ProductsGrid extends StatelessWidget {
   final bool showFavs;
 
   ProductsGrid(this.showFavs);
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);
-    final products = showFavs ? productsData.FavouriteIems : productsData.items;
+    final products = showFavs ? productsData.favoriteItems : productsData.items;
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: products.length,
       itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-        value: products[
-            i], //.value should be used in reusable object like grid/list
-
-        // create: (c) => //builder doesn't support latest versoin of flutter
-        //     products[i],
-
+        // builder: (c) => products[i],
+        value: products[i],
         child: ProductItem(
-            // products[i].id,        // we are providing single product item
-            // products[i].title,    // so we don't need to
+            // products[i].id,
+            // products[i].title,
+            // products[i].imageUrl,
             ),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

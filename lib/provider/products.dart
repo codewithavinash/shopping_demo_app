@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import './product.dart';
 
@@ -37,17 +40,16 @@ class Products with ChangeNotifier {
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),
   ];
-
-  var _showFavouritesOnly = false;
+  // var _showFavoritesOnly = false;
 
   List<Product> get items {
-    // if (_showFavouritesOnly) {
+    // if (_showFavoritesOnly) {
     //   return _items.where((prodItem) => prodItem.isFavorite).toList();
     // }
     return [..._items];
   }
 
-  List<Product> get FavouriteIems {
+  List<Product> get favoriteItems {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
 
@@ -56,25 +58,37 @@ class Products with ChangeNotifier {
   }
 
   // void showFavoritesOnly() {
-  //   _showFavouritesOnly = true;
+  //   _showFavoritesOnly = true;
   //   notifyListeners();
   // }
 
   // void showAll() {
-  //   _showFavouritesOnly = false;
+  //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
 
   void addProduct(Product product) {
-    // _items.add(value);
+    final url = Uri.https(
+        'flutter-update-b953a-default-rtdb.firebaseio.com', '/products.json');
+    http.post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    );
     final newProduct = Product(
-        id: product.id,
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl);
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      id: DateTime.now().toString(),
+    );
     _items.add(newProduct);
-    // _items.insert(0, newProduct); //add product in the beginning of the list
+    // _items.insert(0, newProduct); // at the start of the list
     notifyListeners();
   }
 
