@@ -69,7 +69,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) {
     final url = Uri.https(
-        'flutter-update-b953a-default-rtdb.firebaseio.com', '/products.json');
+        'flutter-update-b953a-default-rtdb.firebaseio.com', '/products.');
     // here "return" is returning "then" block future
     return http
         .post(
@@ -97,6 +97,9 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
       // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
+    }).catchError((error) {
+      print(error);
+      throw (error);
     });
   }
 
