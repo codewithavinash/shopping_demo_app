@@ -67,11 +67,13 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     final url = Uri.https(
         'flutter-update-b953a-default-rtdb.firebaseio.com', '/products.json');
-    http
+    // here "return" is returning "then" block future
+    return http
         .post(
+      // post returns a future
       url,
       body: json.encode({
         'title': product.title,
@@ -82,6 +84,7 @@ class Products with ChangeNotifier {
       }),
     )
         .then((response) {
+      // then returns a future
       print(json.decode(response.body));
 
       final newProduct = Product(
