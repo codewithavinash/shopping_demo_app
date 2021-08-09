@@ -67,26 +67,22 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     final url = Uri.https(
-        'flutter-update-b953a-default-rtdb.firebaseio.com', '/products.');
-    // here "return" is returning "then" block future
-    return http
-        .post(
-      // post returns a future
-      url,
-      body: json.encode({
-        'title': product.title,
-        'description': product.description,
-        'imageUrl': product.imageUrl,
-        'price': product.price,
-        'isFavorite': product.isFavorite,
-      }),
-    )
-        .then((response) {
-      // then returns a future
-      print(json.decode(response.body));
-
+        'flutter-update-b953a-default-rtdb.firebaseio.com', '/products.json');
+    try {
+      // here "return" is returning "then" block future
+      // return http // async returns future always automatically
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }),
+      );
       final newProduct = Product(
         title: product.title,
         description: product.description,
@@ -97,10 +93,10 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
       // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
-    }).catchError((error) {
+    } catch (error) {
       print(error);
-      throw (error);
-    });
+      throw error;
+    }
   }
 
   void updateProduct(String id, Product newProduct) {
