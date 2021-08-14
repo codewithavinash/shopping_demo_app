@@ -44,7 +44,7 @@ class UserProductItem extends StatelessWidget {
                   // as future is rebuilding the widget tree so we fixed the Scaffold.of(context)
                   scaffold.showSnackBar(SnackBar(
                       content: Text(
-                    'Deleting fialed!',
+                    'Deleting failed!',
                     textAlign: TextAlign.center,
                   )));
                 }
