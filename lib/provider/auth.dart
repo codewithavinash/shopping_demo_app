@@ -32,7 +32,7 @@ class Auth with ChangeNotifier {
             'password': password,
             'returnSecureToken': true,
           }));
-      // print(json.decode(response.body));
+      print(json.decode(response.body));
 
       // throwing custom error while error status code is correct but response body has an error like 'email already exists'
       final responseData = json.decode(response.body);

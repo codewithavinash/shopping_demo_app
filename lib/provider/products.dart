@@ -72,7 +72,7 @@ class Products with ChangeNotifier {
   // }
   Future<void> fetchAndSetProducts() async {
     final url = Uri.https('flutter-update-b953a-default-rtdb.firebaseio.com',
-        '/products.json?auth=$authToken');
+        '/products.json', {'auth': '$authToken'});
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
