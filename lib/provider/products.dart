@@ -72,9 +72,22 @@ class Products with ChangeNotifier {
   //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    var filterString = {
+      'auth': '$authToken',
+    };
+
+    if (filterByUser) {
+      filterString = {
+        'auth': '$authToken',
+        'orderBy': jsonEncode('creatorId'),
+        'equalTo': jsonEncode(userId),
+      };
+    }
+
     var url = Uri.https('flutter-update-b953a-default-rtdb.firebaseio.com',
-        '/products.json', {'auth': '$authToken'});
+        '/products.json', filterString);
+
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
